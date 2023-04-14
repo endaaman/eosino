@@ -1,0 +1,4 @@
+[submodule "hover_net"]
+	path = hover_net
+	url = https://github.com/endaaman/hover_net.git
+	branch = conic
