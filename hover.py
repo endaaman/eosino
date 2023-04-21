@@ -10,20 +10,10 @@ from endaaman.cli import BaseCLI
 from endaaman.ml import define_ml_args
 
 from hover_net.models.hovernet.net_desc import HoVerNetExt
+from common import get_color_map
 
 J = os.path.join
 
-
-def get_color_map(alpha=255):
-    return np.array([
-        (  0,   0,   0, 0),
-        (255, 165,   0, alpha),
-        (  0, 255,   0, alpha),
-        (255,   0,   0, alpha),
-        (  0, 255, 255, alpha),
-        (  0,   0, 255, alpha),
-        (255, 255,   0, alpha),
-    ], dtype=np.uint8)
 
 class CLI(BaseCLI):
     class CommonArgs(define_ml_args(seed=42)):
@@ -62,8 +52,6 @@ class CLI(BaseCLI):
         original_img.save(J(a.dest, f'{original_name}_original.png'))
         mask_img.save(J(a.dest, f'{original_name}_mask.png'))
         overlay_img.save(J(a.dest, f'{original_name}_overlay.png'))
-
-
 
 
 

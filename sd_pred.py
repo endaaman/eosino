@@ -1,19 +1,22 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import tensorflow as tf
+
+import matplotlib
 from imageio import imread
-from conic import predict
 from stardist.models import StarDist2D
 from stardist.plot import random_label_cmap, render_label
+
+from conic import predict
 
 np.random.seed(42)
 cmap_random = random_label_cmap()
 
 model = StarDist2D(None, name='conic', basedir='out/sd')
 
-X = np.load('./data/images.npy')
-x = X[10]
 
+X = np.load('./datasets/CoNIC/images.npy')
+x = X[10]
 u, count = predict(model, x,
     normalize            = True,
     test_time_augment    = True,
@@ -21,8 +24,8 @@ u, count = predict(model, x,
     refine_shapes        = {},
 )
 
+matplotlib.use('Agg')
 fig, axs = plt.subplots(1, 3, figsize=(14,5))
-
 for ax, title, img in zip(
     axs.ravel(),
     ('input', 'prediction (instances)', 'prediction (class)'),
@@ -34,5 +37,6 @@ for ax, title, img in zip(
     ax.imshow(img, interpolation=None)
     ax.set_title(title)
     ax.axis('off')
-
 plt.tight_layout()
+plt.savefig('out.png')
+
