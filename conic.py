@@ -16,6 +16,7 @@ from csbdeep.utils import _raise
 from skimage.draw import polygon
 from skimage.measure import regionprops
 from skimage.transform import resize
+from skimage.morphology import remove_small_objects
 from sklearn.decomposition import NMF
 from tqdm.auto import tqdm
 
@@ -421,7 +422,6 @@ def predict(
     u:        class map arrays of shape (256,256,2)
     counts:   cell counts,  tuple of length 6
     """
-    from skimage.morphology import remove_small_objects
 
     if kwargs_instances is None:
         kwargs_instances = {}

@@ -24,7 +24,7 @@ J = os.path.join
 
 class CLI(BaseCLI):
     class CommonArgs(define_ml_args(seed=42)):
-        pass
+        dest:str = 'out/sd'
 
     def pre_common(self, a:CommonArgs):
         pass
@@ -37,13 +37,13 @@ class CLI(BaseCLI):
             test_time_augment = True,
             tta_merge         = dict(prob=np.median, dist=np.mean, prob_class=np.mean),
             refine_shapes     = {},
+            crop_counts       = False,
         )
-        cell_mask = u[:, :, 0]
-        class_mask = u[:, :, 1]
-        return count, cell_mask, class_mask
+        return count, u
 
     class PredArgs(CommonArgs):
         src:str
+        name:str = '{}'
 
     def run_pred(self, a:PredArgs):
         model = StarDist2D(None, name='conic', basedir='out/sd')
@@ -51,19 +51,24 @@ class CLI(BaseCLI):
         MAP = get_color_map(alpha=150)
 
         for image, path in zip(images, paths):
-            image = image.resize((960, 560))
-            count, cell_mask, class_mask = self.predict_image(model, image, path)
-            name = os.path.splitext(os.path.basename(path))[0]
-            class_mask = Image.fromarray(MAP[class_mask])
-            image.save(J('out', f'{name}.jpg'))
-            class_mask.save(J('out', f'{name}_mask.png'))
-            overlay = image.convert('RGBA').copy()
-            overlay.paste(class_mask, (0, 0), class_mask)
-            overlay.convert('RGB').save(J('out', f'{name}_overlay.jpg'))
+            image = image.resize((image.width//2, image.height//2))
+            count, mask = self.predict_image(model, image, path)
+            cell_mask = mask[:, :, 0]
+            class_mask = mask[:, :, 1]
+            name = a.name.format(os.path.splitext(os.path.basename(path))[0])
+            class_mask_image = Image.fromarray(MAP[class_mask])
+            overlay_image = image.convert('RGBA').copy()
+            overlay_image.paste(class_mask_image, (0, 0), class_mask_image)
+            overlay_image = overlay_image.convert('RGB')
 
-            print(count)
+            image.save(J(a.dest, f'{name}.jpg'))
+            class_mask_image.save(J(a.dest, f'{name}_mask.png'))
+            overlay_image.save(J(a.dest, f'{name}_overlay.jpg'))
+
+            np.save(J(a.dest, f'{name}_mask'), mask)
+
             c = {name: i for (name, i) in zip(list(CLASS_NAMES.values())[1:], count)}
-            with open(J('out', f'{name}.json'), 'w') as f:
+            with open(J(a.dest, f'{name}.json'), 'w') as f:
                 json.dump(c, f)
 
 
