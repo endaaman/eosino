@@ -1,7 +1,6 @@
 # ported from
 # https://github.com/stardist/stardist/blob/conic-2022/examples/conic-2022/conic.py
 
-
 import warnings
 from collections.abc import Iterable
 from itertools import product
