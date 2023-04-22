@@ -24,9 +24,9 @@ class CLI(BaseCLI):
         pass
 
     def init_hover_net(self):
-        model = HoVerNetExt(num_types=7, pretrained_backbone='weights/resnet50-0676ba61.pth')
+        model = HoVerNetExt(num_types=7, pretrained_backbone='weights/HoverNet/resnet50-0676ba61.pth')
         # weight = torch.load('weights/hovernet-conic.pth', map_location=lambda storage, loc: storage)
-        weight = torch.load('weights/hovernet-conic.pth', map_location=torch.device('cpu'))
+        weight = torch.load('weights/HoverNet/hovernet-conic.pth', map_location=torch.device('cpu'))
         model.load_state_dict(weight)
         model.eval()
         return model

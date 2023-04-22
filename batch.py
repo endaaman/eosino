@@ -15,19 +15,13 @@ from endaaman import load_images_from_dir_or_file
 from endaaman.ml import BaseCLI, define_ml_args
 
 # from conic import predict, CLASS_NAMES
-from common import get_cell_color_map
+from common import get_cell_color_map, array_twice_size
 
 J = os.path.join
 
 
 def array_to_color_hex(a):
     return '#' + ''.join([f'{v:02X}'[:2] for v in a])
-
-
-def array_twice_size(a):
-    a = np.repeat(a, 2, axis=0)
-    a = np.repeat(a, 2, axis=1)
-    return a
 
 class CLI(BaseCLI):
     class CommonArgs(define_ml_args(seed=42)):

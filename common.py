@@ -18,3 +18,8 @@ def get_cell_color_map(size=1000, alpha=255, seed=1):
     rgb_frame[0, :] = 0
     rgb_frame[:, 3] = alpha
     return rgb_frame
+
+def array_twice_size(a):
+    a = np.repeat(a, 2, axis=0)
+    a = np.repeat(a, 2, axis=1)
+    return a
