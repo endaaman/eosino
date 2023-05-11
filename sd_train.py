@@ -86,7 +86,6 @@ if args.augment:
     aug.add([GaussianBlur(amount=(0,2), axis=(0,1), use_gpu=False), Identity()], probability=0.1)
     aug.add([AdditiveNoise(0.01), Identity()], probability=0.8)
     aug.add([HueBrightnessSaturation(hue=0, brightness=0.1, saturation=(1,1)), Identity()], probability=0.9)
-
     def augmenter(x,y):
         return aug([x,y])
 else:

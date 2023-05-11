@@ -6,7 +6,7 @@ import numpy as np
 from PIL import Image
 
 from endaaman import load_images_from_dir_or_file
-from endaaman.ml import BaseMLCLI
+from endaaman.ml import BaseMLCLI, BaseMLArgs
 
 from hover_net.models.hovernet.net_desc import HoVerNetExt
 from common import get_color_map
@@ -15,7 +15,7 @@ J = os.path.join
 
 
 class CLI(BaseMLCLI):
-    class CommonArgs(BaseMLCLI.CommonArgs):
+    class CommonArgs(BaseMLArgs):
         src: str
         dest: str = 'out'
 
