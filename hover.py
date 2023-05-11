@@ -6,8 +6,7 @@ import numpy as np
 from PIL import Image
 
 from endaaman import load_images_from_dir_or_file
-from endaaman.cli import BaseCLI
-from endaaman.ml import define_ml_args
+from endaaman.ml import BaseMLCLI
 
 from hover_net.models.hovernet.net_desc import HoVerNetExt
 from common import get_color_map
@@ -15,13 +14,10 @@ from common import get_color_map
 J = os.path.join
 
 
-class CLI(BaseCLI):
-    class CommonArgs(define_ml_args(seed=42)):
+class CLI(BaseMLCLI):
+    class CommonArgs(BaseMLCLI.CommonArgs):
         src: str
         dest: str = 'out'
-
-    class HoverArgs(define_ml_args(seed=42)):
-        pass
 
     def init_hover_net(self):
         model = HoVerNetExt(num_types=7, pretrained_backbone='weights/HoverNet/resnet50-0676ba61.pth')
@@ -30,6 +26,9 @@ class CLI(BaseCLI):
         model.load_state_dict(weight)
         model.eval()
         return model
+
+    class HoverArgs(CommonArgs):
+        pass
 
     def run_hover(self, a):
         model = self.init_hover_net()

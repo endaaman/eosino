@@ -12,7 +12,7 @@ from stardist.plot import random_label_cmap, render_label
 
 from pydantic import Field
 from endaaman import load_images_from_dir_or_file
-from endaaman.ml import BaseCLI, define_ml_args
+from endaaman.ml import BaseMLCLI
 
 from conic import predict, CLASS_NAMES
 from common import get_class_color_map, array_twice_size
@@ -22,8 +22,9 @@ cmap_random = random_label_cmap()
 J = os.path.join
 
 
-class CLI(BaseCLI):
-    class CommonArgs(define_ml_args(seed=42)):
+class CLI(BaseMLCLI):
+    class CommonArgs(BaseMLCLI.CommonArgs):
+        seed:int = 42
         dest:str = 'out/sd'
 
     def pre_common(self, a:CommonArgs):
@@ -75,8 +76,8 @@ class CLI(BaseCLI):
 
             np.save(J(a.dest, f'{name}_mask'), mask)
 
-            c = {name: i for (name, i) in zip(names, counts)}
-            with open(J(a.dest, f'{name}.json'), 'w') as f:
+            c = dict(zip(names, counts))
+            with open(J(a.dest, f'{name}.json'), 'w', encoding='utf-8') as f:
                 json.dump(c, f)
 
 

@@ -12,7 +12,7 @@ from tqdm import tqdm
 # from stardist.models import StarDist2D
 # from stardist.plot import random_label_cmap, render_label
 from endaaman import load_images_from_dir_or_file
-from endaaman.ml import BaseCLI, define_ml_args
+from endaaman.ml import BaseMLCLI
 
 # from conic import predict, CLASS_NAMES
 from common import get_cell_color_map, array_twice_size
@@ -23,8 +23,9 @@ J = os.path.join
 def array_to_color_hex(a):
     return '#' + ''.join([f'{v:02X}'[:2] for v in a])
 
-class CLI(BaseCLI):
-    class CommonArgs(define_ml_args(seed=42)):
+class CLI(BaseMLCLI):
+    class CommonArgs(BaseMLCLI.CommonArgs):
+        seed: int = 42
 
     def pre_common(self, a:CommonArgs):
         pass
@@ -45,8 +46,11 @@ class CLI(BaseCLI):
     class M2lArgs(CommonArgs):
         src:str
         dest:str = 'out'
+        notwice:bool = False
 
     def run_m2l(self, a:M2lArgs):
+        '''Convert StarDist outputs to Labkit labeling format(json)
+        '''
         # example = {
         #     'interval': {'min': [0, 0], 'max': [1919, 1079], 'n': 2},
         #     'pixelSizes': [
@@ -67,7 +71,9 @@ class CLI(BaseCLI):
         }
 
         mask = np.load(a.src)
-        mask = array_twice_size(mask)
+        # scale x40 to x20
+        if not a.notwice:
+            mask = array_twice_size(mask)
         class_mask = mask[:, :, 1]
         M = get_cell_color_map(np.max(mask)+10)
         for i in tqdm(range(1, 7)):
