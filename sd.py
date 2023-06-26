@@ -1,13 +1,17 @@
 import os
 import os.path
 import json
+import sys
 from types import SimpleNamespace
 
+# os.environ['AUTOGRAPH_VERBOSITY'] = '1'
+# os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+import tensorflow as tf
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
-import tensorflow as tf
+
 from PIL import Image, ImageDraw, ImageFont
 import matplotlib
 from imageio import imread
@@ -60,6 +64,7 @@ class CLI(BaseMLCLI):
         pass
 
     def run_train(self, a:CommonArgs):
+        print('train')
         # you may need to adjust this to your GPU needs and memory capacity
         # os.environ['CUDA_VISIBLE_DEVICES'] = ...
         limit_gpu_memory(0.8, total_memory=24000)
@@ -136,6 +141,8 @@ class CLI(BaseMLCLI):
             train_background_reg  = 0.01,
             train_reduce_lr       = {'factor': 0.5, 'patience': 80, 'min_delta': 0},
         )
+
+        print('train')
         vars(conf)
         model = StarDist2D(conf, name='conic', basedir=args.modeldir)
         model.train(X, Y, classes=D, validation_data=(Xv, Yv, Dv), augmenter=augmenter, workers=args.workers)
@@ -196,4 +203,5 @@ class CLI(BaseMLCLI):
 
 if __name__ == '__main__':
     cli = CLI()
+    print('run')
     cli.run()

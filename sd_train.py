@@ -1,6 +1,8 @@
 import os
 from types import SimpleNamespace
 
+os.environ['AUTOGRAPH_VERBOSITY'] = '1'
+import tensorflow as tf
 from csbdeep.utils.tf import limit_gpu_memory
 import numpy as np
 import pandas as pd
@@ -38,7 +40,7 @@ def get_class_count(Y0):
 args = SimpleNamespace()
 
 # data in
-args.datadir     = "./data/CoNIC" # path to 'Patch-level Lizard Dataset' as provided by CoNIC organizers
+args.datadir     = "./datasets/CoNIC" # path to 'Patch-level Lizard Dataset' as provided by CoNIC organizers
 args.oversample  = True     # oversample training patches with rare classes
 args.frac_val    = 0.1      # fraction of data used for validation during training
 args.seed        = None     # for reproducible train/val data sets
